@@ -1,0 +1,9 @@
+# Used only by Vercel for the Python function in api/index.py.
+# For local development, use backend/requirements.txt and mcp-server/requirements.txt
+# (python setup.py installs them for you).
+fastapi>=0.115
+uvicorn>=0.30
+pydantic>=2.7
+groq>=1.7,<2
+mcp>=2.2,<3
+python-dotenv>=1.0

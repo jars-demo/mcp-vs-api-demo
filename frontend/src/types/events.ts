@@ -62,5 +62,6 @@ export interface StatusResponse {
     server: { name: string; version?: string } | null;
     tools: McpToolSchema[];
   };
+  mcp_transport?: string;
   api_tools: ApiToolDefinition[];
 }

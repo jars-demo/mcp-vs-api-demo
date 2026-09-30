@@ -76,15 +76,18 @@ async def _fail(timeline: Timeline, exc: BaseException) -> None:
 
 async def _connect(stack: AsyncExitStack, timeline: Timeline) -> Client:
     """Step 1: connect to the MCP server."""
-    url = get_settings().mcp_server_url
+    settings = get_settings()
+    in_process = settings.mcp_transport == "inprocess"
+    url = "in-process" if in_process else settings.mcp_server_url
+    transport = mcp_client.transport_label()
     await timeline.step(
         "client",
         "client",
         "Connecting MCP client",
-        f"Opening a session with the MCP server at {url}.",
+        "Opening an in-process session with the MCP server." if in_process else f"Opening a session with the MCP server at {url}.",
         "running",
         node="mcp_client",
-        details={"transport": "streamable-http", "url": url},
+        details={"transport": transport, "url": url},
     )
     try:
         client = await stack.enter_async_context(mcp_client.open_client(url))
@@ -96,10 +99,10 @@ async def _connect(stack: AsyncExitStack, timeline: Timeline) -> Client:
         "client",
         "client",
         "MCP client initialized",
-        f"Connected to '{server.name if server else 'MCP server'}' over Streamable HTTP.",
+        f"Connected to '{server.name if server else 'MCP server'}' over {transport}.",
         node="mcp_client",
         details={
-            "transport": "streamable-http",
+            "transport": transport,
             "url": url,
             "protocolVersion": client.protocol_version,
             "serverInfo": server.model_dump(exclude_none=True) if server else None,

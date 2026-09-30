@@ -133,6 +133,21 @@ def test_mcp_mode_discovers_and_calls_tools_through_mcp(client: TestClient, fake
     assert "inputSchema" not in fake.requests[0]["tools"][0]["function"]
 
 
+def test_inprocess_transport_used_on_vercel(client: TestClient, fake_groq, monkeypatch: pytest.MonkeyPatch) -> None:
+    """MCP_TRANSPORT=inprocess (set by api/index.py) still goes through tools/list and tools/call."""
+    monkeypatch.setenv("MCP_TRANSPORT", "inprocess")
+    status = client.get("/api/status").json()
+    assert status["mcp"]["connected"] is True
+    assert status["mcp_transport"] == "in-process (Vercel)"
+
+    fake_groq([tool_call_reply("calculate", {"expression": "42 * 17"}), text_reply("714.")])
+    events = read_events(client.post("/api/mcp-mode/chat", json={"message": "What is 42 * 17?"}))
+    steps = final_steps(events)
+    assert "in-process" in steps["client"]["description"]
+    assert steps["result"]["title"] == "42 * 17 = 714"
+    assert events[-1]["type"] == "done"
+
+
 def test_mcp_mode_without_groq_key_still_shows_discovery(client: TestClient, in_process_mcp_server) -> None:
     events = read_events(client.post("/api/mcp-mode/chat", json={"message": "What is 42 * 17?"}))
     steps = final_steps(events)

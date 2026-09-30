@@ -1,0 +1,14 @@
+# Keep deployments small and never upload secrets or local environments.
+.env
+.env.*
+!.env.example
+**/.venv
+**/node_modules
+**/__pycache__
+**/.pytest_cache
+frontend/dist
+frontend/.test-build
+**/tests
+docs
+.github
+setup.py

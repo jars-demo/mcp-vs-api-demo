@@ -3,19 +3,32 @@ The MCP client side of MCP mode.
 
 The backend is an MCP *client*. It connects to the MCP server over HTTP,
 asks which tools exist (`tools/list`) and runs them (`tools/call`).
-It does not import the server's Python code: everything goes through the
-Model Context Protocol.
+Everything goes through the Model Context Protocol.
+
+Hosted on Vercel there is no separate long-running MCP server process, so
+MCP_TRANSPORT=inprocess loads the same server into this process and talks to
+it over an in-memory transport. The protocol messages are identical; only
+the network hop is gone.
 """
 
 from __future__ import annotations
 
 import json
+import sys
+from pathlib import Path
 from typing import Any
 
 from mcp import Client
 from mcp.types import CallToolResult, Implementation, Tool
 
+from shared.config import get_settings
+
 CLIENT_INFO = Implementation(name="mcp-vs-api-backend", version="1.0.0")
+MCP_SERVER_DIR = Path(__file__).resolve().parents[2] / "mcp-server"
+
+
+def transport_label() -> str:
+    return "in-process (Vercel)" if get_settings().mcp_transport == "inprocess" else "Streamable HTTP"
 
 
 def open_client(url: str) -> Client:
@@ -26,7 +39,18 @@ def open_client(url: str) -> Client:
     connects to the server and negotiates the protocol version.
     Response caching is off so every run really sends `tools/list`.
     """
+    if get_settings().mcp_transport == "inprocess":
+        return _open_in_process_client()
     return Client(url, cache=None, read_timeout_seconds=20, client_info=CLIENT_INFO)
+
+
+def _open_in_process_client() -> Client:
+    """Load mcp-server/server.py and connect to it with JSON-RPC over in-memory streams."""
+    if str(MCP_SERVER_DIR) not in sys.path:
+        sys.path.insert(0, str(MCP_SERVER_DIR))
+    import server  # mcp-server/server.py
+
+    return Client(server.mcp, mode="legacy", cache=None, read_timeout_seconds=20, client_info=CLIENT_INFO)
 
 
 def tool_schema(tool: Tool) -> dict[str, Any]:

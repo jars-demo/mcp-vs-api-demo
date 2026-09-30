@@ -76,11 +76,15 @@ async def status() -> dict[str, Any]:
         "backend": "ok",
         "groq": {"configured": settings.groq_configured, "model": settings.groq_model},
         "mcp": await _mcp_status(settings.mcp_server_url),
+        "mcp_transport": mcp_client.transport_label(),
         "api_tools": TOOL_DEFINITIONS,
     }
 
 
 async def _mcp_status(url: str) -> dict[str, Any]:
+    if get_settings().mcp_transport == "inprocess":
+        url = "in-process"
+
     async def discover() -> dict[str, Any]:
         async with mcp_client.open_client(url) as client:
             listing = await client.list_tools()

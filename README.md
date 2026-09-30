@@ -29,6 +29,7 @@ An interactive, open-source workshop that runs the *same* AI request through a t
 - [Manual Setup](#manual-setup)
 - [Configure Groq](#configure-groq)
 - [Running the Application](#running-the-application)
+- [Deploy to Vercel](#deploy-to-vercel)
 - [Using the Simulator](#using-the-simulator)
 - [Understanding API Mode](#understanding-api-mode)
 - [Understanding MCP Mode](#understanding-mcp-mode)
@@ -371,6 +372,22 @@ A `.env` in the project root also works: the backend falls back to it for any va
 | Frontend (prod) | `npm run build && npm start` | http://localhost:4173 |
 
 Health check: `curl http://127.0.0.1:8000/health` → `{"status":"ok"}`
+
+## Deploy to Vercel
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjars-demo%2Fmcp-vs-api-demo&project-name=mcp-vs-api&env=GROQ_API_KEY&envDescription=Groq%20API%20key%20(stays%20server-side)&envLink=https%3A%2F%2Fconsole.groq.com%2Fkeys)
+
+One click: Vercel clones the repo, asks for `GROQ_API_KEY`, then builds and deploys. Everything is already configured in [`vercel.json`](vercel.json):
+
+- the React build is served as static files (`frontend/dist`)
+- `/api/*` and `/health` go to one Python function ([`api/index.py`](api/index.py)) that runs the FastAPI backend
+- optional env var: `GROQ_MODEL` (default `openai/gpt-oss-120b`)
+
+**How MCP runs on Vercel:** serverless functions can't keep a separate MCP server process alive, so the deployed backend loads `mcp-server/server.py` in the same process (`MCP_TRANSPORT=inprocess`). It still speaks MCP (`tools/list`, `tools/call`); only the network hop is gone, and the timeline says so. Run locally to show the full three-process setup.
+
+**Custom domain:** in the Vercel project open *Settings → Domains*, add your subdomain (e.g. `mcp-vs-api.example.com`), then add the DNS record Vercel shows you (usually a `CNAME` to `cname.vercel-dns.com`).
+
+> A public deployment uses **your** Groq key for every visitor. Groq's free-tier limits cap usage, but keep an eye on it or remove the deployment after the event.
 
 ## Using the Simulator
 
