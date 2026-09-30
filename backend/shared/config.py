@@ -6,12 +6,29 @@ import os
 from dataclasses import dataclass
 from pathlib import Path
 
-from dotenv import load_dotenv
+from dotenv import dotenv_values
 
 BACKEND_DIR = Path(__file__).resolve().parent.parent
-load_dotenv(BACKEND_DIR / ".env")
+ROOT_DIR = BACKEND_DIR.parent
 
-DEFAULT_MODEL = "llama-3.3-70b-versatile"
+
+def _load_env_files() -> None:
+    """
+    Load backend/.env, falling back to the project-root .env.
+
+    A non-empty value in backend/.env wins. Real environment variables win over both.
+    """
+    backend = dotenv_values(BACKEND_DIR / ".env")
+    root = dotenv_values(ROOT_DIR / ".env")
+    for key in {**root, **backend}:
+        value = backend.get(key) or root.get(key)
+        if value and not os.environ.get(key):
+            os.environ[key] = value
+
+
+_load_env_files()
+
+DEFAULT_MODEL = "openai/gpt-oss-120b"
 DEFAULT_MCP_SERVER_URL = "http://127.0.0.1:8001/mcp"
 
 

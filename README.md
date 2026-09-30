@@ -348,12 +348,14 @@ Both `npm run dev` and `npm start` forward `/api` and `/health` to the backend, 
 
    ```env
    GROQ_API_KEY=your-groq-key
-   GROQ_MODEL=llama-3.3-70b-versatile
+   GROQ_MODEL=openai/gpt-oss-120b
    MCP_SERVER_URL=http://127.0.0.1:8001/mcp
    BACKEND_PORT=8000
    ```
 
 3. Restart the backend.
+
+A `.env` in the project root also works: the backend falls back to it for any value that is empty in `backend/.env`.
 
 `GROQ_MODEL` can be any Groq model that supports tool calling (see [Groq's model list](https://console.groq.com/docs/models)).
 
@@ -481,7 +483,7 @@ Tests never call the real Groq API: a scripted fake model stands in, so no key i
 
 | Symptom | Fix |
 | --- | --- |
-| **"Groq API key not configured."** | Add `GROQ_API_KEY` to `backend/.env`, then restart `python app.py`. |
+| **"Groq API key not configured."** | Add `GROQ_API_KEY` to `backend/.env` (or the root `.env`), then restart `python app.py`. |
 | **"Backend unavailable."** | Start the backend (Terminal 2). Check http://127.0.0.1:8000/health. |
 | **"MCP server unavailable."** | Start the MCP server (Terminal 1). The header should show *MCP Server ● Connected*. |
 | `python` not found (macOS/Linux) | Use `python3` (for example `python3 setup.py`). |

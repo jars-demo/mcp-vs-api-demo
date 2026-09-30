@@ -24,7 +24,7 @@ SYSTEM_PROMPT = (
     "You can use tools, but only call a tool when it is actually needed to answer. "
     "If no tool is needed (for example greetings, jokes or general questions), answer directly. "
     "Weather tools return demo data, so mention that the weather is demo data. "
-    "Keep answers short: one to three sentences."
+    "Keep answers short: one to three sentences, in plain text without Markdown."
 )
 
 # Safety net so a confused model cannot loop forever.
@@ -61,7 +61,7 @@ async def ask_model(
         "model": get_settings().groq_model,
         "messages": messages,
         "temperature": 0.2,
-        "max_tokens": 512,
+        "max_tokens": 1024,  # headroom for models that reason before answering
     }
     if tools:
         request["tools"] = tools

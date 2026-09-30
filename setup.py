@@ -199,13 +199,15 @@ def create_env_file(project: Path) -> None:
 
 
 def groq_key_configured() -> bool:
-    env_file = BACKEND / ".env"
-    if not env_file.exists():
-        return False
-    for line in env_file.read_text(encoding="utf-8").splitlines():
-        key, _, value = line.partition("=")
-        if key.strip() == "GROQ_API_KEY":
-            return bool(value.strip().strip("\"'"))
+    """True if GROQ_API_KEY has a value in backend/.env or the project-root .env."""
+    for env_file in (BACKEND / ".env", ROOT / ".env"):
+        if not env_file.exists():
+            continue
+        for line in env_file.read_text(encoding="utf-8").splitlines():
+            key, _, value = line.partition("=")
+            value = value.split(" #", 1)[0].strip().strip("\"'")
+            if key.strip() == "GROQ_API_KEY" and value:
+                return True
     return False
 
 
