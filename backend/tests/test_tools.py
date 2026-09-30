@@ -35,7 +35,7 @@ def test_unknown_city_gets_deterministic_fallback() -> None:
 
 @pytest.mark.parametrize(
     ("expression", "expected"),
-    [("42 * 17", 714), ("42 × 17", 714), ("(2 + 3) * 4", 20), ("10 / 4", 2.5), ("2 ^ 10", 1024), ("-3 + 1", -2)],
+    [("42 * 17", 714), ("42 × 17", 714), ("42 x 17", 714), ("(2 + 3) * 4", 20), ("10 / 4", 2.5), ("2 ^ 10", 1024), ("-3 + 1", -2)],
 )
 def test_calculator(expression: str, expected: float) -> None:
     assert calculator.calculate(expression)["result"] == expected

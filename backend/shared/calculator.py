@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import ast
 import operator
+import re
 from typing import Any
 
 _BINARY_OPERATORS = {
@@ -46,6 +47,7 @@ def _evaluate(node: ast.AST) -> float:
 def calculate(expression: str) -> dict[str, Any]:
     """Safely evaluate a basic arithmetic expression like '42 * 17'."""
     cleaned = expression.replace("×", "*").replace("÷", "/").replace("^", "**").strip()
+    cleaned = re.sub(r"(?<=\d)\s*[xX]\s*(?=\d)", " * ", cleaned)  # "42 x 17" -> "42 * 17"
     if not cleaned:
         return {"expression": expression, "error": "Expression is empty"}
     if len(cleaned) > MAX_EXPRESSION_LENGTH:

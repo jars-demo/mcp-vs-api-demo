@@ -27,7 +27,7 @@ from mcp import Client
 from mcp_mode import client as mcp_client
 from shared import groq_client
 from shared.config import get_settings
-from shared.errors import mcp_unavailable, to_workshop_error
+from shared.errors import describe, mcp_unavailable, to_workshop_error
 from shared.events import Emit, Timeline, format_call, summarize_tool_result
 
 logger = logging.getLogger(__name__)
@@ -89,7 +89,7 @@ async def _connect(stack: AsyncExitStack, timeline: Timeline) -> Client:
     try:
         client = await stack.enter_async_context(mcp_client.open_client(url))
     except Exception as exc:  # noqa: BLE001
-        raise mcp_unavailable(f"{type(exc).__name__}: {exc}"[:500]) from exc
+        raise mcp_unavailable(describe(exc)) from exc
 
     server = client.server_info
     await timeline.step(
@@ -211,7 +211,7 @@ async def _call_tool(client: Client, timeline: Timeline, name: str, arguments: d
     try:
         response = await client.call_tool(name, arguments)
     except Exception as exc:  # noqa: BLE001
-        raise mcp_unavailable(f"{type(exc).__name__}: {exc}"[:500]) from exc
+        raise mcp_unavailable(describe(exc)) from exc
 
     result = mcp_client.parse_tool_result(response)
     raw_response = response.model_dump(by_alias=True, exclude_none=True, mode="json")

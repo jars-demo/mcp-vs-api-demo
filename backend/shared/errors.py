@@ -40,12 +40,18 @@ def _first_leaf(exc: BaseException) -> BaseException:
     return exc
 
 
+def describe(exc: BaseException) -> str:
+    """Short technical description for presenter mode (never includes secrets)."""
+    leaf = _first_leaf(exc)
+    return f"{type(leaf).__name__}: {leaf}"[:500]
+
+
 def to_workshop_error(exc: BaseException) -> WorkshopError:
     """Translate any exception into a WorkshopError."""
     exc = _first_leaf(exc)
     if isinstance(exc, WorkshopError):
         return exc
-    technical = f"{type(exc).__name__}: {exc}"[:500]
+    technical = describe(exc)
     if isinstance(exc, groq.AuthenticationError):
         return WorkshopError("groq_auth", "Groq rejected the API key.", "Check GROQ_API_KEY in backend/.env.", technical)
     if isinstance(exc, groq.RateLimitError):
