@@ -8,18 +8,16 @@ An interactive, open-source workshop that runs the *same* AI request through a t
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10%2B-3776ab?logo=python&logoColor=white)
 ![FastAPI](https://img.shields.io/badge/FastAPI-backend-009688?logo=fastapi&logoColor=white)
-![MCP](https://img.shields.io/badge/MCP-Python%20SDK%20v2-111111)
-![Groq](https://img.shields.io/badge/Groq-tool%20calling-f55036)
+![MCP](<https://img.shields.io/badge/MCP-Python%20SDK%20v2-111111>)
+![Groq](<https://img.shields.io/badge/Groq-tool%20calling-f55036>)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
-
-> **Screenshot / GIF placeholder:** add `docs/images/simulator.gif` showing **Run Both** on *"What's the weather in Mumbai?"*
 
 ---
 
 ## Contents
 
 - [Why this project?](#why-this-project)
-- [What you'll learn](#what-youll-learn)
+- [What you&#39;ll learn](#what-youll-learn)
 - [Demo](#demo)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
@@ -177,12 +175,12 @@ mcp-vs-api-demo/
 
 ## Requirements
 
-| Tool | Version | Check with |
-| --- | --- | --- |
-| Python | 3.10 or newer | `python --version` |
-| Node.js | 20.19+ or 22.12+ (LTS recommended) | `node --version` |
-| npm | comes with Node.js | `npm --version` |
-| Groq API key | free | [console.groq.com/keys](https://console.groq.com/keys) |
+| Tool         | Version                            | Check with                                            |
+| ------------ | ---------------------------------- | ----------------------------------------------------- |
+| Python       | 3.10 or newer                      | `python --version`                                  |
+| Node.js      | 20.19+ or 22.12+ (LTS recommended) | `node --version`                                    |
+| npm          | comes with Node.js                 | `npm --version`                                     |
+| Groq API key | free                               | [console.groq.com/keys](https://console.groq.com/keys) |
 
 No Docker, database or weather API key needed. On macOS/Linux you may need to type `python3` instead of `python`.
 
@@ -353,29 +351,28 @@ Both `npm run dev` and `npm start` forward `/api` and `/health` to the backend, 
    MCP_SERVER_URL=http://127.0.0.1:8001/mcp
    BACKEND_PORT=8000
    ```
-
 3. Restart the backend.
 
 A `.env` in the project root also works: the backend falls back to it for any value that is empty in `backend/.env`.
 
-`GROQ_MODEL` can be any Groq model that supports tool calling (see [Groq's model list](https://console.groq.com/docs/models)).
+`GROQ_MODEL` can be any Groq model that supports tool calling (see [Groq&#39;s model list](https://console.groq.com/docs/models)).
 
 **Security:** the key is only read by the Python backend. It is never sent to the browser, never logged, and `.env` is git-ignored. There is deliberately no `VITE_GROQ_API_KEY`, because anything prefixed `VITE_` is bundled into public JavaScript.
 
 ## Running the Application
 
-| Service | Command | URL |
-| --- | --- | --- |
-| MCP server | `python server.py` (in `mcp-server/`, venv active) | http://127.0.0.1:8001/mcp |
-| Backend | `python app.py` (in `backend/`, venv active) | http://127.0.0.1:8000 · docs at `/docs` |
-| Frontend (dev) | `npm run dev` (in `frontend/`) | http://localhost:5173 |
-| Frontend (prod) | `npm run build && npm start` | http://localhost:4173 |
+| Service         | Command                                                | URL                                       |
+| --------------- | ------------------------------------------------------ | ----------------------------------------- |
+| MCP server      | `python server.py` (in `mcp-server/`, venv active) | http://127.0.0.1:8001/mcp                 |
+| Backend         | `python app.py` (in `backend/`, venv active)       | http://127.0.0.1:8000 · docs at`/docs` |
+| Frontend (dev)  | `npm run dev` (in `frontend/`)                     | http://localhost:5173                     |
+| Frontend (prod) | `npm run build && npm start`                         | http://localhost:4173                     |
 
 Health check: `curl http://127.0.0.1:8000/health` → `{"status":"ok"}`
 
 ## Deploy to Vercel
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjars-demo%2Fmcp-vs-api-demo&project-name=mcp-vs-api&env=GROQ_API_KEY&envDescription=Groq%20API%20key%20(stays%20server-side)&envLink=https%3A%2F%2Fconsole.groq.com%2Fkeys)
+[![Deploy with Vercel](https://vercel.com/button)](<https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fjars-demo%2Fmcp-vs-api-demo&project-name=mcp-vs-api&env=GROQ_API_KEY&envDescription=Groq%20API%20key%20(stays%20server-side)&envLink=https%3A%2F%2Fconsole.groq.com%2Fkeys>)
 
 One click: Vercel clones the repo, asks for `GROQ_API_KEY`, then builds and deploys. Everything is already configured in [`vercel.json`](vercel.json):
 
@@ -428,14 +425,14 @@ Adding a tool means editing **only the MCP server**. The backend discovers it au
 
 Code: [`mcp-server/server.py`](mcp-server/server.py) · [`backend/mcp_mode/service.py`](backend/mcp_mode/service.py) · [`backend/mcp_mode/client.py`](backend/mcp_mode/client.py)
 
-| Concept | API Integration | MCP |
-| --- | --- | --- |
-| Primary abstraction | Endpoint / function | Protocol |
-| Tool discovery | Application-defined | Standardized MCP mechanism |
-| Invocation | Application / API call | MCP tool call |
-| Reusability | Depends on the integration | Designed for reusable tool exposure |
-| Can use APIs internally | Yes | Yes |
-| AI-specific protocol | Not necessarily | Yes |
+| Concept                 | API Integration            | MCP                                 |
+| ----------------------- | -------------------------- | ----------------------------------- |
+| Primary abstraction     | Endpoint / function        | Protocol                            |
+| Tool discovery          | Application-defined        | Standardized MCP mechanism          |
+| Invocation              | Application / API call     | MCP tool call                       |
+| Reusability             | Depends on the integration | Designed for reusable tool exposure |
+| Can use APIs internally | Yes                        | Yes                                 |
+| AI-specific protocol    | Not necessarily            | Yes                                 |
 
 Neither approach is automatically better. They solve different problems, and they often work together:
 
@@ -498,18 +495,18 @@ Tests never call the real Groq API: a scripted fake model stands in, so no key i
 
 ## Troubleshooting
 
-| Symptom | Fix |
-| --- | --- |
-| **"Groq API key not configured."** | Add `GROQ_API_KEY` to `backend/.env` (or the root `.env`), then restart `python app.py`. |
-| **"Backend unavailable."** | Start the backend (Terminal 2). Check http://127.0.0.1:8000/health. |
-| **"MCP server unavailable."** | Start the MCP server (Terminal 1). The header should show *MCP Server ● Connected*. |
-| `python` not found (macOS/Linux) | Use `python3` (for example `python3 setup.py`). |
-| `.venv\Scripts\activate` blocked (PowerShell) | Run `Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use Command Prompt. |
-| `ModuleNotFoundError` | Your venv isn't active. Activate it (see above) or run `python setup.py`. |
-| Port already in use | Change `BACKEND_PORT` in `backend/.env` (and set `BACKEND_URL=http://127.0.0.1:<port>` before `npm run dev`) or `MCP_PORT` in `mcp-server/.env` (and `MCP_SERVER_URL` in `backend/.env`). |
-| **"Groq could not complete the request."** | Occasionally a model emits a malformed tool call. Run again, or try another `GROQ_MODEL`. |
-| **"Groq rate limit reached."** | Free tier limits. Wait a few seconds. |
-| Frontend blank / Node errors | Node 20.19+ is required: `node --version`. |
+| Symptom                                          | Fix                                                                                                                                                                                                      |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **"Groq API key not configured."**         | Add`GROQ_API_KEY` to `backend/.env` (or the root `.env`), then restart `python app.py`.                                                                                                          |
+| **"Backend unavailable."**                 | Start the backend (Terminal 2). Check http://127.0.0.1:8000/health.                                                                                                                                      |
+| **"MCP server unavailable."**              | Start the MCP server (Terminal 1). The header should show*MCP Server ● Connected*.                                                                                                                    |
+| `python` not found (macOS/Linux)               | Use`python3` (for example `python3 setup.py`).                                                                                                                                                       |
+| `.venv\Scripts\activate` blocked (PowerShell)  | Run`Set-ExecutionPolicy -Scope CurrentUser RemoteSigned` once, or use Command Prompt.                                                                                                                  |
+| `ModuleNotFoundError`                          | Your venv isn't active. Activate it (see above) or run`python setup.py`.                                                                                                                               |
+| Port already in use                              | Change`BACKEND_PORT` in `backend/.env` (and set `BACKEND_URL=http://127.0.0.1:<port>` before `npm run dev`) or `MCP_PORT` in `mcp-server/.env` (and `MCP_SERVER_URL` in `backend/.env`). |
+| **"Groq could not complete the request."** | Occasionally a model emits a malformed tool call. Run again, or try another`GROQ_MODEL`.                                                                                                               |
+| **"Groq rate limit reached."**             | Free tier limits. Wait a few seconds.                                                                                                                                                                    |
+| Frontend blank / Node errors                     | Node 20.19+ is required:`node --version`.                                                                                                                                                              |
 
 Turn on **Presenter Mode** to see the technical error detail for any failure.
 
