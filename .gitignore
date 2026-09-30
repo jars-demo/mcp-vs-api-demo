@@ -17,6 +17,7 @@ __pycache__/
 # ── Node / Vite ────────────────────────────────────────
 node_modules/
 dist/
+.test-build/
 *.tsbuildinfo
 .vite/
 
