@@ -12,12 +12,14 @@ An interactive, open-source workshop that runs the *same* AI request through a t
 ![Groq](<https://img.shields.io/badge/Groq-tool%20calling-f55036>)
 ![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
+![MCP vs API workshop home page: "Same AI task. Two different integration patterns."](image/README/demo.png)
+
 ---
 
 ## Contents
 
 - [Why this project?](#why-this-project)
-- [What you&#39;ll learn](#what-youll-learn)
+- [What you'll learn](#what-youll-learn)
 - [Demo](#demo)
 - [Architecture](#architecture)
 - [Project Structure](#project-structure)
