@@ -1,6 +1,7 @@
 {
   "name": "mcp-vs-api-frontend",
   "private": true,
+  "license": "MIT",
   "version": "1.0.0",
   "description": "Interactive simulator for the MCP vs API workshop",
   "type": "module",
